@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -12,7 +13,7 @@ import android.widget.ProgressBar;
 
 import com.gog.applelo.gog.R;
 import com.gog.applelo.gog.interfaces.AuthGogService;
-import com.gog.applelo.gog.models.Token;
+import com.gog.applelo.gog.models.auth.Token;
 
 import java.io.IOException;
 
@@ -90,6 +91,7 @@ public class ConnectionActivity extends AppCompatActivity {
             public void onResponse(Call<Token> call, retrofit2.Response<Token> response) {
 
                 token = response.body();
+                Log.d("get", token.getAccess_token());
                 updateRetrofit(true);
 
                 Intent i = new Intent(getBaseContext(), MainActivity.class);
@@ -120,6 +122,7 @@ public class ConnectionActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Token> call, retrofit2.Response<Token> response) {
                 token = response.body();
+                Log.d("refresh", token.getAccess_token());
                 updateRetrofit(true);
             }
 
@@ -131,20 +134,31 @@ public class ConnectionActivity extends AppCompatActivity {
     }
 
     private void updateRetrofit(boolean haveToken) {
-        client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
-            @Override
-            public okhttp3.Response intercept(Chain chain) throws IOException {
-                Request newRequest  = chain.request().newBuilder()
-                        .addHeader("Authorization", "Bearer " + token.getAccess_token())
-                        .build();
-                return chain.proceed(newRequest);
-            }
-        }).build();
-        retrofit = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .baseUrl("https://embed.gog.com")
-                .build();
+        if (haveToken) {
+            client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
+                @Override
+                public okhttp3.Response intercept(Chain chain) throws IOException {
+                    Request newRequest  = chain.request().newBuilder()
+                            .addHeader("Authorization", "Bearer " + token.getAccess_token())
+                            .build();
+                    return chain.proceed(newRequest);
+                }
+            }).build();
+
+            retrofit = new Retrofit.Builder()
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(client)
+                    .baseUrl("https://embed.gog.com")
+                    .build();
+        }
+        else {
+            retrofit = new Retrofit.Builder()
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .baseUrl("https://embed.gog.com")
+                    .build();
+        }
+
+
     }
 
 }

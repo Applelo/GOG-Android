@@ -1,4 +1,4 @@
-package com.gog.applelo.gog.models;
+package com.gog.applelo.gog.models.auth;
 
 import com.google.gson.annotations.SerializedName;
 

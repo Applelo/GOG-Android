@@ -1,6 +1,6 @@
 package com.gog.applelo.gog.interfaces;
 
-import com.gog.applelo.gog.models.Token;
+import com.gog.applelo.gog.models.auth.Token;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
