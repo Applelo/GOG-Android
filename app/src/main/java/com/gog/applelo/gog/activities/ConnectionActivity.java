@@ -135,7 +135,7 @@ public class ConnectionActivity extends AppCompatActivity {
             @Override
             public okhttp3.Response intercept(Chain chain) throws IOException {
                 Request newRequest  = chain.request().newBuilder()
-                        .addHeader("Authorization", "Bearer " + token)
+                        .addHeader("Authorization", "Bearer " + token.getAccess_token())
                         .build();
                 return chain.proceed(newRequest);
             }
