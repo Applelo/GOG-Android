@@ -2,9 +2,9 @@ package com.gog.applelo.gog.activities;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -14,12 +14,16 @@ import com.gog.applelo.gog.R;
 import com.gog.applelo.gog.interfaces.AuthGogService;
 import com.gog.applelo.gog.models.Token;
 
+import java.io.IOException;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -31,29 +35,24 @@ public class ConnectionActivity extends AppCompatActivity {
     private String redirect_uri = "https://embed.gog.com/on_login_success?origin=client";
     private String response_type = "code";
     private String layout = "client2";
-    private Handler refreshToken;
-
-    //new login
     private String code;
 
-    private Retrofit retrofit;
+    private Handler refreshToken;
     public Token token;
+
+    public Retrofit retrofit;
+    private OkHttpClient client;
     private AuthGogService authGogService;
 
     @BindView(R.id.connectionWebView) WebView webView;
     @BindView(R.id.connectionProgressBar) ProgressBar progressBar;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection);
         ButterKnife.bind(this);
-        retrofit = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("https://embed.gog.com")
-                .build();
+        updateRetrofit(false);
         authGogService = retrofit.create(AuthGogService.class);
 
 
@@ -88,9 +87,11 @@ public class ConnectionActivity extends AppCompatActivity {
         Call<Token> call = authGogService.newToken(client_id, client_secret, "authorization_code", code, redirect_uri);
         call.enqueue(new Callback<Token>() {
             @Override
-            public void onResponse(Call<Token> call, Response<Token> response) {
+            public void onResponse(Call<Token> call, retrofit2.Response<Token> response) {
 
                 token = response.body();
+                updateRetrofit(true);
+
                 Intent i = new Intent(getBaseContext(), MainActivity.class);
                 startActivity(i);
 
@@ -117,8 +118,9 @@ public class ConnectionActivity extends AppCompatActivity {
         Call<Token> call = authGogService.refreshToken(client_id, client_secret, "refresh_token", token.getRefresh_token());
         call.enqueue(new Callback<Token>() {
             @Override
-            public void onResponse(Call<Token> call, Response<Token> response) {
+            public void onResponse(Call<Token> call, retrofit2.Response<Token> response) {
                 token = response.body();
+                updateRetrofit(true);
             }
 
             @Override
@@ -126,6 +128,23 @@ public class ConnectionActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void updateRetrofit(boolean haveToken) {
+        client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
+            @Override
+            public okhttp3.Response intercept(Chain chain) throws IOException {
+                Request newRequest  = chain.request().newBuilder()
+                        .addHeader("Authorization", "Bearer " + token)
+                        .build();
+                return chain.proceed(newRequest);
+            }
+        }).build();
+        retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .baseUrl("https://embed.gog.com")
+                .build();
     }
 
 }
