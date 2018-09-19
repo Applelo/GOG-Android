@@ -6,6 +6,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class FriendStatus {
 
+    public final int ANONYMOUS_USER = 0;//No special relationship with this use
+    public final int INVITED_USER = 1;//You have sent this user a friend request
+    public final int INVITED_BY_USER = 2;//You have received a friend request from this user.
+    public final int FRIEND = 3;//You are friends with this user.
+
     @SerializedName("id")
     @Expose
     private String id;

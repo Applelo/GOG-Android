@@ -6,6 +6,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class WishlistStatus {
 
+    public final int WISHLIST_PRIVATE = 0;
+    public final int WISHLIST_PUBLIC = 1;
+    public final int WISHLIST_FOR_FRIENDS = 2;
+
     @SerializedName("sharing")
     @Expose
     private Integer sharing;
