@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,8 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.gog.applelo.gog.R;
+import com.gog.applelo.gog.interfaces.AuthGogService;
+import com.gog.applelo.gog.models.Token;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -23,6 +26,11 @@ import java.net.URL;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.HttpUrl;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -32,16 +40,13 @@ public class MainActivity extends AppCompatActivity {
     private String redirect_uri = "https://embed.gog.com/on_login_success?origin=client";
     private String response_type = "code";
     private String layout = "client2";
-
-    private String grant_type;
+    private Handler refreshToken;
 
     //new login
     private String code;
 
-    //refresh
-    private String refresh_token;
-
-    private String access_token;
+    private Retrofit retrofit;
+    private Token token;
 
     @BindView(R.id.connectionWebView) WebView webView;
     @BindView(R.id.connectionProgressBar) ProgressBar progressBar;
@@ -53,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl("https://embed.gog.com")
+                .build();
+
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient(){
@@ -81,6 +91,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void gogGetToken() {
+
+        AuthGogService authGogService = retrofit.create(AuthGogService.class);
+        Call<Token> call = authGogService.newToken(client_id, client_secret, "authorization_code", code, redirect_uri);
+        call.enqueue(new Callback<Token>() {
+            @Override
+            public void onResponse(Call<Token> call, Response<Token> response) {
+
+                token = response.body();
+                
+
+                //refresh token every hour
+                refreshToken = new Handler();
+                refreshToken.postDelayed(new Runnable() {
+                    public void run() {
+                        gogRefreshToken();
+                    }
+                }, 600000 * 60);//one hour
+            }
+
+            @Override
+            public void onFailure(Call<Token> call, Throwable t) {
+
+            }
+        });
 
     }
 
