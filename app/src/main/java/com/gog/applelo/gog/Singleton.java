@@ -31,8 +31,8 @@ public class Singleton {
     //region - retrofit
     private static Retrofit retrofit = null;
 
-    public void updateRetrofit(boolean haveToken) {
-        if (haveToken) {
+    private static void updateRetrofit() {
+        if (token != null) {
             OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
                 @Override
                 public okhttp3.Response intercept(Chain chain) throws IOException {
@@ -59,6 +59,9 @@ public class Singleton {
     }
 
     public static Retrofit getRetrofit() {
+        if (retrofit == null) {
+            updateRetrofit();
+        }
         return retrofit;
     }
 
@@ -86,6 +89,7 @@ public class Singleton {
 
     public static void setToken(Token token) {
         Singleton.token = token;
+        updateRetrofit();
     }
     //endregion
 }

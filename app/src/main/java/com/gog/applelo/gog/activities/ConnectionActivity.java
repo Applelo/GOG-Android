@@ -46,7 +46,6 @@ public class ConnectionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_connection);
         ButterKnife.bind(this);
 
-        Singleton.getInstance().updateRetrofit(false);
         authGogService = Singleton.getRetrofit().create(AuthGogService.class);
 
         webView.getSettings().setJavaScriptEnabled(true);
@@ -82,7 +81,6 @@ public class ConnectionActivity extends AppCompatActivity {
             public void onResponse(Call<Token> call, retrofit2.Response<Token> response) {
 
                 Singleton.setToken(response.body());
-                Singleton.getInstance().updateRetrofit(true);
 
                 Intent i = new Intent(getBaseContext(), MainActivity.class);
                 startActivity(i);
@@ -112,7 +110,6 @@ public class ConnectionActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Token> call, retrofit2.Response<Token> response) {
                 Singleton.setToken(response.body());
-                Singleton.getInstance().updateRetrofit(true);
             }
 
             @Override
