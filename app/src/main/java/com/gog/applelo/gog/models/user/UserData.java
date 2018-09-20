@@ -37,9 +37,27 @@ public class UserData {
     @SerializedName("username")
     @Expose
     private String username;
+    @SerializedName("galaxyUserId")
+    @Expose
+    private String galaxyUserId;
     @SerializedName("email")
     @Expose
     private String email;
+    @SerializedName("avatar")
+    @Expose
+    private String avatar;
+    @SerializedName("walletBalance")
+    @Expose
+    private WalletBalance walletBalance;
+    @SerializedName("purchasedItems")
+    @Expose
+    private PurchasedItems purchasedItems;
+    @SerializedName("wishlistedItems")
+    @Expose
+    private Integer wishlistedItems;
+    @SerializedName("friends")
+    @Expose
+    private List<Friend> friends = null;
     @SerializedName("personalizedProductPrices")
     @Expose
     private List<Object> personalizedProductPrices = null;
@@ -59,18 +77,24 @@ public class UserData {
      * @param currencies
      * @param personalizedSeriesPrices
      * @param updates
+     * @param wishlistedItems
      * @param isLoggedIn
      * @param checksum
+     * @param avatar
      * @param preferredLanguage
      * @param country
      * @param selectedCurrency
      * @param username
+     * @param galaxyUserId
+     * @param friends
+     * @param walletBalance
      * @param email
      * @param userId
      * @param personalizedProductPrices
+     * @param purchasedItems
      * @param ratingBrand
      */
-    public UserData(String country, List<Currency> currencies, SelectedCurrency selectedCurrency, PreferredLanguage preferredLanguage, String ratingBrand, Boolean isLoggedIn, Checksum checksum, Updates updates, String userId, String username, String email, List<Object> personalizedProductPrices, List<Object> personalizedSeriesPrices) {
+    public UserData(String country, List<Currency> currencies, SelectedCurrency selectedCurrency, PreferredLanguage preferredLanguage, String ratingBrand, Boolean isLoggedIn, Checksum checksum, Updates updates, String userId, String username, String galaxyUserId, String email, String avatar, WalletBalance walletBalance, PurchasedItems purchasedItems, Integer wishlistedItems, List<Friend> friends, List<Object> personalizedProductPrices, List<Object> personalizedSeriesPrices) {
         super();
         this.country = country;
         this.currencies = currencies;
@@ -82,7 +106,13 @@ public class UserData {
         this.updates = updates;
         this.userId = userId;
         this.username = username;
+        this.galaxyUserId = galaxyUserId;
         this.email = email;
+        this.avatar = avatar;
+        this.walletBalance = walletBalance;
+        this.purchasedItems = purchasedItems;
+        this.wishlistedItems = wishlistedItems;
+        this.friends = friends;
         this.personalizedProductPrices = personalizedProductPrices;
         this.personalizedSeriesPrices = personalizedSeriesPrices;
     }
@@ -167,12 +197,60 @@ public class UserData {
         this.username = username;
     }
 
+    public String getGalaxyUserId() {
+        return galaxyUserId;
+    }
+
+    public void setGalaxyUserId(String galaxyUserId) {
+        this.galaxyUserId = galaxyUserId;
+    }
+
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public WalletBalance getWalletBalance() {
+        return walletBalance;
+    }
+
+    public void setWalletBalance(WalletBalance walletBalance) {
+        this.walletBalance = walletBalance;
+    }
+
+    public PurchasedItems getPurchasedItems() {
+        return purchasedItems;
+    }
+
+    public void setPurchasedItems(PurchasedItems purchasedItems) {
+        this.purchasedItems = purchasedItems;
+    }
+
+    public Integer getWishlistedItems() {
+        return wishlistedItems;
+    }
+
+    public void setWishlistedItems(Integer wishlistedItems) {
+        this.wishlistedItems = wishlistedItems;
+    }
+
+    public List<Friend> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(List<Friend> friends) {
+        this.friends = friends;
     }
 
     public List<Object> getPersonalizedProductPrices() {

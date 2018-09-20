@@ -1,28 +1,37 @@
 package com.gog.applelo.gog.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.gog.applelo.gog.R;
+import com.gog.applelo.gog.Singleton;
+import com.gog.applelo.gog.interfaces.EmbedGogService;
+import com.gog.applelo.gog.models.user.UserData;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    @BindView(R.id.connectionWebView) Toolbar toolbar;
-    @BindView(R.id.drawer_layout) DrawerLayout drawer;
+    private EmbedGogService embedGogService;
+
+    @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.nav_view) NavigationView navigationView;
 
     @Override
@@ -33,6 +42,12 @@ public class MainActivity extends AppCompatActivity
 
         setSupportActionBar(toolbar);
 
+        embedGogService = Singleton.getRetrofit().create(EmbedGogService.class);
+        Log.d("token", Singleton.getToken().getAccess_token());
+        getUserData();
+
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -43,6 +58,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -92,7 +108,43 @@ public class MainActivity extends AppCompatActivity
 
         }
 
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private void getUserData() {
+        Call<UserData> call = embedGogService.userData();
+        call.enqueue(new Callback<UserData>() {
+            @Override
+            public void onResponse(Call<UserData> call, Response<UserData> response) {
+                UserData user = response.body();
+                Singleton.setUser(user);
+
+
+                if (user.getEmail() != null) {
+                    TextView navHeaderUserEmail = findViewById(R.id.nav_header_user_email);
+                    navHeaderUserEmail.setText(user.getEmail());
+                }
+
+                if (user.getUsername() != null) {
+                    TextView navHeaderUserPseudo = findViewById(R.id.nav_header_user_pseudo);
+                    navHeaderUserPseudo.setText(user.getUsername());
+                }
+
+                if (user.getAvatar() != null) {
+                    ImageView navHeaderUserAvatar = findViewById(R.id.nav_header_user_avatar);
+                    Picasso.get().load(user.getAvatar() + "_avl.jpg").into(navHeaderUserAvatar);
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<UserData> call, Throwable t) {
+
+            }
+        });
+    }
+
 }

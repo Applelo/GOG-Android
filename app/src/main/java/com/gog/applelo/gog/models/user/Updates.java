@@ -18,9 +18,6 @@ public class Updates {
     @SerializedName("products")
     @Expose
     private Integer products;
-    @SerializedName("forum")
-    @Expose
-    private Integer forum;
     @SerializedName("total")
     @Expose
     private Integer total;
@@ -35,19 +32,17 @@ public class Updates {
     /**
      * 
      * @param total
-     * @param forum
      * @param products
      * @param unreadChatMessages
      * @param pendingFriendRequests
      * @param messages
      */
-    public Updates(Integer messages, Integer pendingFriendRequests, Integer unreadChatMessages, Integer products, Integer forum, Integer total) {
+    public Updates(Integer messages, Integer pendingFriendRequests, Integer unreadChatMessages, Integer products, Integer total) {
         super();
         this.messages = messages;
         this.pendingFriendRequests = pendingFriendRequests;
         this.unreadChatMessages = unreadChatMessages;
         this.products = products;
-        this.forum = forum;
         this.total = total;
     }
 
@@ -81,14 +76,6 @@ public class Updates {
 
     public void setProducts(Integer products) {
         this.products = products;
-    }
-
-    public Integer getForum() {
-        return forum;
-    }
-
-    public void setForum(Integer forum) {
-        this.forum = forum;
     }
 
     public Integer getTotal() {

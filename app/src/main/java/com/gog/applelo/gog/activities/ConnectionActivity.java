@@ -1,32 +1,27 @@
 package com.gog.applelo.gog.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.gog.applelo.gog.R;
+import com.gog.applelo.gog.Singleton;
 import com.gog.applelo.gog.interfaces.AuthGogService;
 import com.gog.applelo.gog.models.auth.Token;
-
-import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+
 
 
 public class ConnectionActivity extends AppCompatActivity {
@@ -39,23 +34,20 @@ public class ConnectionActivity extends AppCompatActivity {
     private String code;
 
     private Handler refreshToken;
-    public Token token;
-
-    public Retrofit retrofit;
-    private OkHttpClient client;
     private AuthGogService authGogService;
 
     @BindView(R.id.connectionWebView) WebView webView;
     @BindView(R.id.connectionProgressBar) ProgressBar progressBar;
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection);
         ButterKnife.bind(this);
-        updateRetrofit(false);
-        authGogService = retrofit.create(AuthGogService.class);
 
+        Singleton.getInstance().updateRetrofit(false);
+        authGogService = Singleton.getRetrofit().create(AuthGogService.class);
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient(){
@@ -75,7 +67,6 @@ public class ConnectionActivity extends AppCompatActivity {
 
         });
 
-
         gogConnexion();
     }
 
@@ -90,9 +81,8 @@ public class ConnectionActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Token> call, retrofit2.Response<Token> response) {
 
-                token = response.body();
-                Log.d("get", token.getAccess_token());
-                updateRetrofit(true);
+                Singleton.setToken(response.body());
+                Singleton.getInstance().updateRetrofit(true);
 
                 Intent i = new Intent(getBaseContext(), MainActivity.class);
                 startActivity(i);
@@ -117,13 +107,12 @@ public class ConnectionActivity extends AppCompatActivity {
 
     private void gogRefreshToken() {
 
-        Call<Token> call = authGogService.refreshToken(client_id, client_secret, "refresh_token", token.getRefresh_token());
+        Call<Token> call = authGogService.refreshToken(client_id, client_secret, "refresh_token", Singleton.getToken().getRefresh_token());
         call.enqueue(new Callback<Token>() {
             @Override
             public void onResponse(Call<Token> call, retrofit2.Response<Token> response) {
-                token = response.body();
-                Log.d("refresh", token.getAccess_token());
-                updateRetrofit(true);
+                Singleton.setToken(response.body());
+                Singleton.getInstance().updateRetrofit(true);
             }
 
             @Override
@@ -133,32 +122,5 @@ public class ConnectionActivity extends AppCompatActivity {
         });
     }
 
-    private void updateRetrofit(boolean haveToken) {
-        if (haveToken) {
-            client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
-                @Override
-                public okhttp3.Response intercept(Chain chain) throws IOException {
-                    Request newRequest  = chain.request().newBuilder()
-                            .addHeader("Authorization", "Bearer " + token.getAccess_token())
-                            .build();
-                    return chain.proceed(newRequest);
-                }
-            }).build();
-
-            retrofit = new Retrofit.Builder()
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .client(client)
-                    .baseUrl("https://embed.gog.com")
-                    .build();
-        }
-        else {
-            retrofit = new Retrofit.Builder()
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl("https://embed.gog.com")
-                    .build();
-        }
-
-
-    }
 
 }
