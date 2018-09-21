@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.gog.applelo.gog.R;
 import com.gog.applelo.gog.Singleton;
 import com.gog.applelo.gog.interfaces.EmbedGogService;
-import com.gog.applelo.gog.models.user.UserData;
+import com.gog.applelo.gog.models.embed.user.UserData;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void getUserData() {
-        Call<UserData> call = embedGogService.userData();
+        Call<UserData> call = embedGogService.getUserData();
         call.enqueue(new Callback<UserData>() {
             @Override
             public void onResponse(Call<UserData> call, Response<UserData> response) {

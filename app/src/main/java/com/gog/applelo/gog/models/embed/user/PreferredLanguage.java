@@ -1,34 +1,34 @@
 
-package com.gog.applelo.gog.models.user;
+package com.gog.applelo.gog.models.embed.user;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class SelectedCurrency {
+public class PreferredLanguage {
 
     @SerializedName("code")
     @Expose
     private String code;
-    @SerializedName("symbol")
+    @SerializedName("name")
     @Expose
-    private String symbol;
+    private String name;
 
     /**
      * No args constructor for use in serialization
      * 
      */
-    public SelectedCurrency() {
+    public PreferredLanguage() {
     }
 
     /**
      * 
-     * @param symbol
+     * @param name
      * @param code
      */
-    public SelectedCurrency(String code, String symbol) {
+    public PreferredLanguage(String code, String name) {
         super();
         this.code = code;
-        this.symbol = symbol;
+        this.name = name;
     }
 
     public String getCode() {
@@ -39,12 +39,12 @@ public class SelectedCurrency {
         this.code = code;
     }
 
-    public String getSymbol() {
-        return symbol;
+    public String getName() {
+        return name;
     }
 
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

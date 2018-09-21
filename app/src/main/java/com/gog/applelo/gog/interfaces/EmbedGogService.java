@@ -1,7 +1,7 @@
 package com.gog.applelo.gog.interfaces;
 
-import com.gog.applelo.gog.models.user.User;
-import com.gog.applelo.gog.models.user.UserData;
+import com.gog.applelo.gog.models.embed.user.User;
+import com.gog.applelo.gog.models.embed.user.UserData;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -15,10 +15,10 @@ public interface EmbedGogService {
     //region - user
 
     @GET(API + "/userData.json")
-    Call<UserData> userData();
+    Call<UserData> getUserData();
 
     @GET(API + "/users/info/{user_id}")
-    Call<User> userInfo(
+    Call<User> getUserInfo(
             @Path("user_id") String user_id,
             @Query("expand") String expand //friendStatus,wishlistStatus,blockedStatus
     );

@@ -15,13 +15,17 @@ import com.gog.applelo.gog.R;
 import com.gog.applelo.gog.Singleton;
 import com.gog.applelo.gog.interfaces.AuthGogService;
 import com.gog.applelo.gog.models.auth.Token;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.HttpUrl;
 import retrofit2.Call;
 import retrofit2.Callback;
-
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class ConnectionActivity extends AppCompatActivity {
@@ -80,19 +84,22 @@ public class ConnectionActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Token> call, retrofit2.Response<Token> response) {
 
-                Singleton.setToken(response.body());
+                if (response.isSuccessful()) {
+                    Singleton.setToken(response.body());
 
-                Intent i = new Intent(getBaseContext(), MainActivity.class);
-                startActivity(i);
+                    Intent i = new Intent(getBaseContext(), MainActivity.class);
+                    startActivity(i);
 
 
-                //refresh token every hour
-                refreshToken = new Handler();
-                refreshToken.postDelayed(new Runnable() {
-                    public void run() {
-                        gogRefreshToken();
-                    }
-                }, 600000 * 60);//one hour
+                    //refresh token every hour
+                    refreshToken = new Handler();
+                    refreshToken.postDelayed(new Runnable() {
+                        public void run() {
+                            gogRefreshToken();
+                        }
+                    }, 600000 * 60);//one hour
+                }
+
             }
 
             @Override
@@ -109,7 +116,10 @@ public class ConnectionActivity extends AppCompatActivity {
         call.enqueue(new Callback<Token>() {
             @Override
             public void onResponse(Call<Token> call, retrofit2.Response<Token> response) {
-                Singleton.setToken(response.body());
+                if (response.isSuccessful()) {
+                    Singleton.setToken(response.body());
+                }
+
             }
 
             @Override

@@ -1,5 +1,5 @@
 
-package com.gog.applelo.gog.models.user;
+package com.gog.applelo.gog.models.embed.user;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

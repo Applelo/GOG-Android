@@ -1,10 +1,10 @@
 
-package com.gog.applelo.gog.models.user;
+package com.gog.applelo.gog.models.embed.user;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Currency {
+public class SelectedCurrency {
 
     @SerializedName("code")
     @Expose
@@ -17,7 +17,7 @@ public class Currency {
      * No args constructor for use in serialization
      * 
      */
-    public Currency() {
+    public SelectedCurrency() {
     }
 
     /**
@@ -25,7 +25,7 @@ public class Currency {
      * @param symbol
      * @param code
      */
-    public Currency(String code, String symbol) {
+    public SelectedCurrency(String code, String symbol) {
         super();
         this.code = code;
         this.symbol = symbol;

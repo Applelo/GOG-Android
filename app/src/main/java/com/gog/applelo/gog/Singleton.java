@@ -1,8 +1,7 @@
 package com.gog.applelo.gog;
 
 import com.gog.applelo.gog.models.auth.Token;
-import com.gog.applelo.gog.models.user.User;
-import com.gog.applelo.gog.models.user.UserData;
+import com.gog.applelo.gog.models.embed.user.UserData;
 
 import java.io.IOException;
 
@@ -18,7 +17,7 @@ public class Singleton {
 
     // other instance variables can be here
 
-    private Singleton() {};
+    private Singleton() {}
 
     public static Singleton getInstance() {
         if (INSTANCE == null) {
