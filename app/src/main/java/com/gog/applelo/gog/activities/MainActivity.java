@@ -1,5 +1,7 @@
 package com.gog.applelo.gog.activities;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -9,8 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ImageView;
+import android.support.v7.widget.SearchView;
 import android.widget.TextView;
 
 import com.gog.applelo.gog.R;
@@ -68,6 +71,25 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+
+        SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
+
+        SearchView searchView = null;
+        if (searchItem != null) {
+            searchView = (SearchView) searchItem.getActionView();
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity.this.getComponentName()));
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -98,25 +120,29 @@ public class MainActivity extends AppCompatActivity
         call.enqueue(new Callback<UserData>() {
             @Override
             public void onResponse(Call<UserData> call, Response<UserData> response) {
-                UserData user = response.body();
-                Singleton.setUser(user);
+
+                if (response.isSuccessful()) {
+
+                    UserData user = response.body();
+                    Singleton.setUser(user);
 
 
-                if (user.getEmail() != null) {
-                    TextView navHeaderUserEmail = findViewById(R.id.nav_header_user_email);
-                    navHeaderUserEmail.setText(user.getEmail());
+                    if (user.getEmail() != null) {
+                        TextView navHeaderUserEmail = findViewById(R.id.nav_header_user_email);
+                        navHeaderUserEmail.setText(user.getEmail());
+                    }
+
+                    if (user.getUsername() != null) {
+                        TextView navHeaderUserPseudo = findViewById(R.id.nav_header_user_pseudo);
+                        navHeaderUserPseudo.setText(user.getUsername());
+                    }
+
+                    if (user.getAvatar() != null) {
+                        CircleImageView navHeaderUserAvatar = findViewById(R.id.nav_header_user_avatar);
+                        Picasso.get().load(user.getAvatar() + "_avl.jpg").into(navHeaderUserAvatar);
+                    }
+
                 }
-
-                if (user.getUsername() != null) {
-                    TextView navHeaderUserPseudo = findViewById(R.id.nav_header_user_pseudo);
-                    navHeaderUserPseudo.setText(user.getUsername());
-                }
-
-                if (user.getAvatar() != null) {
-                    CircleImageView navHeaderUserAvatar = findViewById(R.id.nav_header_user_avatar);
-                    Picasso.get().load(user.getAvatar() + "_avl.jpg").into(navHeaderUserAvatar);
-                }
-
 
             }
 
