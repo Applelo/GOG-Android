@@ -79,7 +79,6 @@ public class ConnectionActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("hey", "resume");
         if (Singleton.getToken() == null) {
             webView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
@@ -88,8 +87,6 @@ public class ConnectionActivity extends AppCompatActivity {
             webView.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
             gogRefreshToken(true);
-            Intent i = new Intent(getBaseContext(), MainActivity.class);
-            startActivity(i);
         }
     }
 
@@ -115,6 +112,8 @@ public class ConnectionActivity extends AppCompatActivity {
 
                 if (response.isSuccessful()) {
                     Singleton.setToken(response.body());
+
+                    Log.d("token", Singleton.getToken().getAccess_token());
 
                     Intent i = new Intent(getBaseContext(), MainActivity.class);
                     startActivity(i);
@@ -152,6 +151,7 @@ public class ConnectionActivity extends AppCompatActivity {
             public void onResponse(Call<Token> call, retrofit2.Response<Token> response) {
                 if (response.isSuccessful()) {
                     Singleton.setToken(response.body());
+                    Log.d("token", Singleton.getToken().getAccess_token());
                     if (redirect) {
                         Intent i = new Intent(getBaseContext(), MainActivity.class);
                         startActivity(i);
