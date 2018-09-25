@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity
 
         embedGogService = Singleton.getRetrofit().create(EmbedGogService.class);
         Log.d("token", Singleton.getToken().getAccess_token());
+        Log.d("user_id", Singleton.getToken().getUser_id());
         getUserData();
 
 
