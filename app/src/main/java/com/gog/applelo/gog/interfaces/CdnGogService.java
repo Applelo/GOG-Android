@@ -11,6 +11,12 @@ public interface CdnGogService {
 
     String API = "https://cdn.gog.com";
 
+    /**
+     * @param product_id
+     * @param os
+     * @param build_id
+     * @return Call<Repository>
+     */
     @GET(API + "/content-system/v1/manifests/{product_id}/{os}/{build_id}/repository.json")
     Call<Repository> getProductRepository(
             @Path("product_id") String product_id,
@@ -18,6 +24,13 @@ public interface CdnGogService {
             @Path("build_id") String build_id
     );
 
+    /**
+     * @param product_id
+     * @param os
+     * @param build_id
+     * @param manifest_id
+     * @return Call<Manifest>
+     */
     @GET(API + "/content-system/v1/manifests/{product_id}/{os}/{build_id}/{manifest_id}.json")
     Call<Manifest> getProductManifest(
             @Path("product_id") String product_id,

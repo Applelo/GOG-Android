@@ -11,14 +11,25 @@ public interface ChatGogService {
 
     String API = "https://chat.gog.com";
 
-    @GET(API + "/users/{galaxy_user_id}/friends")
+    /**
+     * Returns the list of friends.
+     * @param user_id
+     * @return Call<Friends>
+     */
+    @GET(API + "/users/{user_id}/friends")
     Call<Friends> getFriends(
-            @Path("galaxy_user_id") String galaxy_user_id
+            @Path("user_id") String user_id
     );
 
-    @GET(API + "/users/{galaxy_user_id}/invitations")
+
+    /**
+     * Return the list of invitations
+     * @param user_id
+     * @return Call<Invitations>
+     */
+    @GET(API + "/users/{user_id}/invitations")
     Call<Invitations> getInvitations(
-            @Path("galaxy_user_id") String galaxy_user_id
+            @Path("user_id") String user_id
     );
 
 

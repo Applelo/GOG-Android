@@ -126,6 +126,7 @@ public class MainActivity extends AppCompatActivity
 
                     UserData user = response.body();
                     Singleton.setUser(user);
+                    Log.d("galaxy_user_id", Singleton.getUser().getGalaxyUserId());
 
 
                     if (user.getEmail() != null) {

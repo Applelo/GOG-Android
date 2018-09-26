@@ -10,6 +10,15 @@ public interface AuthGogService {
 
     String API = "https://auth.gog.com";
 
+    /**
+     * Get a new token
+     * @param client_id
+     * @param client_secret
+     * @param grant_type
+     * @param code
+     * @param redirect_uri
+     * @return Call<Token>
+     */
     @GET(API + "/token")
     Call<Token> newToken(
             @Query("client_id") String client_id,
@@ -19,6 +28,14 @@ public interface AuthGogService {
             @Query("redirect_uri") String redirect_uri
     );
 
+    /**
+     * Refresh token
+     * @param client_id
+     * @param client_secret
+     * @param grant_type
+     * @param refresh_token
+     * @return Call<Token>
+     */
     @GET(API + "/token")
     Call<Token> refreshToken(
             @Query("client_id") String client_id,

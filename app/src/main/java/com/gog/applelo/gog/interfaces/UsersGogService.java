@@ -9,6 +9,11 @@ public interface UsersGogService {
 
     String API = "https://users.gog.com";
 
+
+    /**
+     * Returns information about the user
+     * @return Call<User>
+     */
     @GET(API + "/users/{user_id}")
     Call<User> getUser();
 

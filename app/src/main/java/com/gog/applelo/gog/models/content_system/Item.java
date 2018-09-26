@@ -1,5 +1,5 @@
 
-package com.gog.applelo.gog.models.contentsystem;
+package com.gog.applelo.gog.models.content_system;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

@@ -10,6 +10,12 @@ public interface GameplayGogService {
 
     String API = "https://gameplay.gog.com";
 
+    /**
+     * Get achievements
+     * @param product_id Product id
+     * @param user_id User id
+     * @return Call<Achievements>
+     */
     @GET(API + "/clients/{product_id}/users/{user_id}/achievements")
     Call<Achievements> getAchievements(
         @Path("product_id") String product_id,
