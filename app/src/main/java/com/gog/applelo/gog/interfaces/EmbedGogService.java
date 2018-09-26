@@ -1,5 +1,6 @@
 package com.gog.applelo.gog.interfaces;
 
+import com.gog.applelo.gog.models.embed.listing.products.Products;
 import com.gog.applelo.gog.models.embed.reviews.ReviewWasHelpful;
 import com.gog.applelo.gog.models.embed.reviews.Reviews;
 import com.gog.applelo.gog.models.embed.user.User;
@@ -30,45 +31,106 @@ public interface EmbedGogService {
 
     /**
      * Get user info
-     * @param user_id
-     * @param expand
-     * @return
+     * @param user_id User id
+     * @param expand friendStatus,wishlistStatus,blockedStatus
+     * @return Call<User>
      */
     @GET(API + "/users/info/{user_id}")
     Call<User> getUserInfo(
             @Path("user_id") String user_id,
-            @Query("expand") String expand //friendStatus,wishlistStatus,blockedStatus
+            @Query("expand") String expand
     );
 
     //endregion
 
-    //region - games & movies
+    //region - listing
+
+    /**
+     * Searches for all available products matching the given criterias.
+     * @param search Search string
+     * @param page Page number
+     * @return Call<Products>
+     */
+    @GET(API + "/games/ajax/filtered")
+    Call<Products> searchProducts(
+            @Query("search") String search,
+            @Query("page") String page
+    );
+
+    /**
+     * Searches for all available products matching the given criterias.
+     * @param search Search string
+     * @param mediaType game or movie
+     * @param page Page number
+     * @return Call<Products>
+     */
+    @GET(API + "/games/ajax/filtered")
+    Call<Products> searchProducts(
+            @Query("search") String search,
+            @Query("mediaType") String mediaType,
+            @Query("page") String page
+    );
+
+    /**
+     * Searches for all available products matching the given criterias.
+     * Movies don’t support the parameters category, devpub, feature, release, system.
+     * @param mediaType game or movie
+     * @param page Page number
+     * @param price Price range
+     * @param search Search string
+     * @param sort Sort order
+     * @param limit Max results
+     * @return Call<Products>
+     */
+    @GET(API + "/games/ajax/filtered")
+    Call<Products> searchProducts(
+            @Query("search") String search,
+            @Query("mediaType") String mediaType,
+            @Query("page") String page,
+            @Query("price") String price,
+            @Query("sort") String sort,
+            @Query("limit") String limit
+    );
+
+    /**
+     * Searches for all available products matching the given criterias.
+     * Movies don’t support the parameters category, devpub, feature, release, system.
+     * @param category Game genre
+     * @param devpub Developer or publisher
+     * @param feature Game features
+     * @param mediaType game or movie
+     * @param page Page number
+     * @param price Price range
+     * @param release Release timeframe
+     * @param search Search string
+     * @param sort Sort order
+     * @param system os
+     * @param limit Max results
+     * @return Call<Products>
+     */
+    @GET(API + "/games/ajax/filtered")
+    Call<Products> searchProducts(
+            @Query("search") String search,
+            @Query("mediaType") String mediaType,
+            @Query("page") String page,
+            @Query("category") String category,
+            @Query("devpub") String devpub,
+            @Query("feature") String feature ,
+            @Query("price") String price,
+            @Query("release") String release,
+            @Query("sort") String sort,
+            @Query("system") String system,
+            @Query("limit") String limit
+    );
 
     //endregion
-
-    //region - wishlist
-
-    //endregion
-
-    //region - tags
-
-    //endregion
-
-    //region - settings
-
-    //endregion
-
-    //region - friends
-
-    //endregion
-
 
     //region - reviews
 
     /**
      * Returns the reviews for a game
-     * @param product_id
-     * @param page
+     * @param product_id product id
+     * @param page page of review
      * @return Call<Reviews>
      */
     @GET(API + "/reviews/product/{product_id}.json")
@@ -79,8 +141,8 @@ public interface EmbedGogService {
 
     /**
      * Set a review was helpful or not for the user
-     * @param review_id
-     * @param review_was_helpful
+     * @param review_id the review id
+     * @param review_was_helpful the review was helpful or not
      * @return Call<ResponseBody>
      */
     @Headers("Content-Type: application/json;charset=UTF-8")
@@ -92,7 +154,7 @@ public interface EmbedGogService {
 
     /**
      * Report the review
-     * @param review_id
+     * @param review_id the review id
      * @return Call<ResponseBody>
      */
     @Headers("Content-Type: application/json;charset=UTF-8")
