@@ -1,10 +1,16 @@
 package com.gog.applelo.gog.interfaces;
 
+import com.gog.applelo.gog.models.embed.reviews.ReviewWasHelpful;
+import com.gog.applelo.gog.models.embed.reviews.Reviews;
 import com.gog.applelo.gog.models.embed.user.User;
 import com.gog.applelo.gog.models.embed.user.UserData;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -45,5 +51,36 @@ public interface EmbedGogService {
 
     //endregion
 
+
+    //region - reviews
+
+    /**
+     * Returns the reviews for a game
+     * @param product_id
+     * @param page
+     * @return Call<Reviews>
+     */
+    @GET(API + "/reviews/product/{product_id}.json")
+    Call<Reviews> getProductReviews(
+        @Path("product_id") String product_id,
+        @Query("page") int page
+    );
+
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    @POST(API + "/reviews/vote/review/{review_id}.json")
+    Call<ResponseBody> postReviewWasHelpful(
+            @Path("review_id") String review_id,
+            @Body ReviewWasHelpful review_was_helpful
+    );
+
+    @Headers("Content-Type: application/json;charset=UTF-8")
+    @POST(API + "/reviews/report/review/{review_id}.json")
+    Call<ResponseBody> postReviewReport(
+            @Path("review_id") String review_id
+    );
+
+
+
+    //endregion
 
 }
